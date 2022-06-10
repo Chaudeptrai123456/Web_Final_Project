@@ -111,15 +111,16 @@ let cartofuserbyid = async(req,res)=>{
    /* res.json({
         message:"them vao vo hang",
         productlist:productlist ,
-        total:total
+        total:total 
     })*/
-  
+    console.log(req.query.token)
     res.render("pages/Cartofuser.ejs",{
 
         message:"them vao vo hang",
         iduser:req.query.iduser,
         productlist:result ,
-        total:total
+        total:total,
+        token:req.query.token
     }) 
 }
 

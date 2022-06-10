@@ -8,19 +8,11 @@ import  testconncet1 from "../src/config/connectDB";
 import cors from 'cors'
 import http from'http'
 import {Server} from'socket.io'
-import passport from 'passport'
-const FacebookStrategy  = require('passport-facebook').Strategy
+ 
 let app = express()
-const session = require('express-session');
+ 
 require('dotenv').config()
  
-app.use(session({
-    resave: false,
-    saveUninitialized: true,
-    secret: 'SECRET' 
-  }));
-
-
 var cookieparser = require('cookie-parser')
  
 
@@ -42,26 +34,7 @@ initwebroute(app)
 
 testconncet1()
 
-let port = process.env.PORT || 6969
-
-
- 
- 
-passport.use(new FacebookStrategy({
-  clientID: process.env.facebook_api_key,
-  clientSecret:process.env.facebook_serect_key ,
-  callbackURL: process.env.callback_url
-},
-function(accessToken, refreshToken, profile, done) {
-  process.nextTick(function () {
-    //Check whether the User exists or not using profile.id
-    if(config.use_database) {
-       //Further code of Database.
-    }
-    return done(null, profile);
-  });
-}
-));
+let port = process.env.PORT || 6969 
 
 
 app.listen(port,()=>{

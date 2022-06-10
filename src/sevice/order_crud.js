@@ -158,7 +158,14 @@ let cartofuser = async(iduser)=>{
                     iduser:iduser,
                     [Op.or]: [
                         { paymentmethob: "confirm" },
-                        { paymentmethob: "Shipping" }
+                        { paymentmethob: "Was Transport" },
+                        {paymentmethob:"Have Paid"}
+                        /**
+                         * 
+                         * ,
+                        
+                         * 
+                         */
                       ]
                      
                 }
@@ -311,6 +318,7 @@ let confirmorder = async (iduser)=>{
                     element.amount = product.quantity
                     await element.save()
                 }
+
 
 
 

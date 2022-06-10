@@ -32,13 +32,38 @@ let authenloginuser = async(req,res,next)=>{
 
       
     }
-    
-
-
 }
 
+let autheniduserbyid = async(req,res,next)=>{
+    let token = req.query.token; 
+    if (token) {
+      const decode = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+      console.log("decode   ",decode)
+      console.log("id user   ",req.query.iduser)
+      if (decode.userdata.user.id == req.query.iduser) {
+        next()
+      } else {
+        res.status(300).send("invalid token")
+      }
+    } else {
+      res.status(500).send("not token")
+    }
+
+/*
+    let token = req.query.token;
+    const decode =   jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+      console.log("delaoaskdoasikdosakdo   " , decode.userdata.id)
+      if(decode.userdata.id === req.query.iduser) {
+        next()
+      }*/
+    
+   
+
+}
+  
+
 let authenloginadmin = async(req,res,next)=>{
-     
+
   let token  = req.body.token || req.query.token || req.headers['access-token']
   if (!token) {
       return res.status(403).send("A token is required for authentication");
@@ -114,5 +139,6 @@ module.exports = {
   authenloginuser:authenloginuser,
   authenloginadmin:authenloginadmin,
   authenuertopurchase:authenuertopurchase,
+  autheniduserbyid:autheniduserbyid,
   handleupfile:handleupfile
 }

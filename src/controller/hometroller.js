@@ -1,24 +1,26 @@
-
+import crudservice from"../sevice/crud_user";
  
- import crudservice from"../sevice/crud_user";
- import jwt from'jsonwebtoken'
  import jwttoken from'../sevice/jwttoken'
 import product_crud from '../sevice/product_crud'
 import orders_crud from '../sevice/order_crud'
 import userservice from'../sevice/userservice'
- 
+const jwt = require('jsonwebtoken');
+ require('dotenv').config()
 let gethomepage =  async(req,res) => {
-    console.log(req.query.iduser)
-    let userdata = await userservice.getuserbyid(req.query.iduser)
+   // console.log(req.query.iduser)
+    //let userdata = await userservice.getuserbyid(req.query.iduser)
    
-    let token =   jwttoken.createjwttoken(userdata)
-     
+    //let token =   jwttoken.createjwttoken(userdata)
+   //  console.log(userdata)
+    const token = req.query.token || req.body.token
+    const decode = jwt.verify(token,process.env.ACCESS_TOKEN_SECRET)
+    console.log(decode)
     let productlist = await product_crud.getAllProduct()
     res.render('pages/Shopping.ejs',{
         id:req.query.iduser,
         token :token,
         productlist :productlist,
-        name:userdata.dataValues.firstname
+        name:decode.userdata.user.lastname
     })
  
 

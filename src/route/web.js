@@ -47,7 +47,7 @@ let initwebroute = (app) =>{
 
     router.post("/api/shopping/addtocart",auth.authenloginuser,ordercontroller.allProductInCart)
     
-    router.get("/api/shopping/cartofuserbyid",ordercontroller.cartofuserbyid)
+    router.get("/api/shopping/cartofuserbyid",auth.autheniduserbyid,ordercontroller.cartofuserbyid)
        
     router.post("/api/searchproductbyname",ordercontroller.search)
 
