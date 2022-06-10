@@ -64,8 +64,8 @@ let addproducttocart = async (req,res) =>{
                 message:"them vao vo hang",
                 iduser:req.body.iduser,
                 productlist:result ,
-                total:total
-                
+                total:total,
+                token:req.body.token
             }) 
         }   else {
             var date = new Date()
@@ -91,7 +91,8 @@ let addproducttocart = async (req,res) =>{
                 message:"them vao vo hang",
                 iduser:req.body.iduser,
                 productlist:result ,
-                total:total
+                total:total,
+                token:req.body.token
             }) 
         }
     }
