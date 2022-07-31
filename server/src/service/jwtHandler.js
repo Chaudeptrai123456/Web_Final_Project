@@ -29,5 +29,11 @@ module.exports = {
                 resolve(decodeData)
             })
         })
+    },
+    generateAccessToken : (usedID) =>{
+        let token = jwt.sign({usedID}, process.env.accessTokenSecret, {
+            expiresIn: '10min'
+        })
+        return token
     }
 }

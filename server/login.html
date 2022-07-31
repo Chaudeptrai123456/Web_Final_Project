@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+
+</head>
+
+<body>
+    <h1>Log in</h1>
+    <button><a href='http://localhost:8080/user/auth'>Login With Google</a></button>
+    <div id="form">
+        <label>
+            <h3>userName</h3><input id="username" name="userName" type="text"><br>
+        </label>
+        <label>
+            <h3>Password</h3><input id="password" name="userPassword" type="password">
+        </label><br>
+        <button id="button-submit" type="submit">login</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <script src="./loginJavscript.js"></script>
+    <script>
+        const instance = axios.create({
+            baseURL:'http://localhost:8080/user/login',
+            timeout: 3*1000
+        })
+
+    </script>
+</body>
+
+</html>

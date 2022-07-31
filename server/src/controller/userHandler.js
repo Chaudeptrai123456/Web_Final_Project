@@ -2,6 +2,7 @@ const cloudinary = require('../service/cloudinaryConfig');
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const jwt = require('../service/jwtHandler')
 module.exports = {
     register: async (req, res) => {
         try {
@@ -38,7 +39,6 @@ module.exports = {
             return res.status(500).json("Internal server error");
         }
     },
-
     //login
     login: async (req, res) => {
         try {
@@ -62,9 +62,12 @@ module.exports = {
                     message: "Password incorrect!",
                 });
             } else {
-                return res.status(200).json({
+                let tokens = await jwt.create(user._id)
+                console.log(tokens)
+                return res.status(200,{"Access-Control-Allow-Origin":"true"}).json({
                     message: "login successful!",
-                    userData: user
+                    accessToken: tokens.accessToken,
+                    refreshToken: tokens.refreshToken
                 });
             }
         } catch (err) {
@@ -117,7 +120,19 @@ module.exports = {
             res.status(400).json("Internal server error");
         }
     },
-
+    handlerRegisterByGoogle: async (req, res) => {
+        try {
+            // let user = req.user
+            // console.log('controller ', user)
+            //console.log(req)
+            console.log(req.user)
+            res.sendFile('C:/Users/84833/Desktop/LoginWithGooeBE_Training/server/src/views/socket.io.html')
+        } catch (err) {
+            return res.status(500).json({
+                message: 'Error'
+            })
+        }
+    },
     delete: async (req, res) => {
         try {
             let userName = req.body
@@ -130,6 +145,23 @@ module.exports = {
             });
         } catch (err) {
             return res.status(404).json("Internal server error");
+        }
+    },
+    createRoomChat: async (req, res) => {
+        return res.status(2000).json({
+            message: "create room"
+        })
+    },
+    refreshToken: async (req, res) => {
+        try {
+            let accessToken = jwt.generateAccessToken(req.decoded)
+            return res.status(200).json({
+                accessToken
+            })
+        } catch (err) {
+            return res.status(500).json({
+                message: error
+            })
         }
     }
 }

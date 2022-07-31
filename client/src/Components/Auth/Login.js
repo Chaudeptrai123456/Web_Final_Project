@@ -24,7 +24,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        LOGIN_URL,
+        'http://localhost:8080/user/login',
         JSON.stringify({ userName,userPassword  }),
         {
           headers: { "Content-Type": "application/json" },

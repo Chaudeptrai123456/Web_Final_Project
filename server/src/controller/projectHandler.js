@@ -2,6 +2,12 @@ const Project = require('../model/project')
 const Org = require('../model/organization')
 const User = require('../model/user')
 const cloudinary = require('../service/cloudinaryConfig')
+const redis = require('redis')
+require('dotenv').config()
+const client = redis.createClient(6969)
+client.on('error', (err) => {
+    console.log(err)
+})
 let getProjectListOfUser = async (user) => {
     let allProject = await Promise.all(user.projectList.map(async (item) => {
         let project = await Project.findOne({
@@ -95,24 +101,35 @@ module.exports = {
         }
     },
     findAllProjectOfUser: async (req, res) => {
-        try {
-            let {
-                userName
-            } = req.body
-            let user = await User.findOne({
-                userName
-            })
-            let allProject = await getProjectListOfUser(user)
-            console.log(user)
-            return res.status(200).json({
-                projectList: allProject
-            })
-        } catch (err) {
-            console.log(err)
-            return res.status(500).json({
-                error: err
-            })
-        }
+        let keyRedis = req.body.userName
+        return client.get(keyRedis, async (err, projects) => {
+            if (projects) {
+                return res.status(200).json({
+                    projectList: projects
+                })
+            } else {
+                try {
+                    let {
+                        userName
+                    } = req.body
+                    let user = await User.findOne({
+                        userName
+                    })
+                    let allProject = await getProjectListOfUser(user)
+                    console.log(user)
+                    client.setEx(userName, 60000, JSON.stringify(allProject))
+                    return res.status(200).json({
+                        projectList: allProject
+                    })
+                } catch (err) {
+                    console.log(err)
+                    return res.status(500).json({
+                        error: err
+                    })
+                }
+            }
+        })
+
     },
     findAllProject: async (req, res) => {
         try {
@@ -122,7 +139,6 @@ module.exports = {
                 let projectOfUser = await getProjectListOfUser(index)
                 allProject.push(...projectOfUser)
             }))
-
             return res.status(200).json({
                 prjectList: allProject
             })
