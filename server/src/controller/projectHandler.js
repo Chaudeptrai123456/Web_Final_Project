@@ -8,6 +8,7 @@ const client = redis.createClient(6969)
 client.on('error', (err) => {
     console.log(err)
 })
+const pageSize = 4
 let getProjectListOfUser = async (user) => {
     let allProject = await Promise.all(user.projectList.map(async (item) => {
         let project = await Project.findOne({
@@ -132,16 +133,35 @@ module.exports = {
 
     },
     findAllProject: async (req, res) => {
+        //Pagination with page size = req.query
         try {
-            let user = await User.find()
-            let allProject = []
-            await Promise.all(user.map(async (index) => {
-                let projectOfUser = await getProjectListOfUser(index)
-                allProject.push(...projectOfUser)
-            }))
-            return res.status(200).json({
-                prjectList: allProject
-            })
+            let page = req.query.page
+            if (page) {
+                page = parseInt(page)
+                skipedProject = (page-1)*pageSize
+                //pagination with skip and limit with mongoose support
+                let projectList = await Project.find({}).skip(skipedProject).limit(pageSize)
+                let user = await User.find().skip(skipedProject).limit(pageSize)
+                let allProject = []
+                await Promise.all(user.map(async (index) => {
+                    let projectOfUser = await getProjectListOfUser(index)
+                    allProject.push(...projectOfUser)
+                }))
+                return res.status(200).json({
+                    prjectList: projectList
+                })
+            } else {
+                let user = await User.find()
+                let allProject = []
+                await Promise.all(user.map(async (index) => {
+                    let projectOfUser = await getProjectListOfUser(index,2)
+                    allProject.push(...projectOfUser)
+                }))
+                return res.status(200).json({
+                    prjectList: allProject
+                })
+            }
+
         } catch (err) {
             console.log(err)
             return res.status(500).json({

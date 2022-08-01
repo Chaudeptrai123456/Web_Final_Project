@@ -8,23 +8,18 @@ const morgan = require("morgan");
 const cookieSession = require('cookie-session')
 const passport = require('passport')
 const routeFirebase = require('./src/routes/routeFirebase')
+const socketChat = require('./src/service/chat.socket.io')
 require("dotenv").config();
 const app = express();
 const http = require('http')
+const jwt = require('./src/service/jwtHandler')
 const server = http.createServer(app)
+require('dotenv').config()
 const {
     Server
 } = require('socket.io');
 const io = new Server(server)
-io.on('connection', (socket) => {
-    console.log('user connect');
-    socket.on('disconnect',()=>{console.log('user disconect')})
-    socket.on('chat message', msg => {
-        console.log('message ',msg)
-        io.emit('chat message', msg);
-    });
-    socket.on('disconnetion', () => console.log('user disconnect'))
-});
+socketChat.handler(io)
 const port = process.env.PORT;
 app.use(
     cors({

@@ -4,7 +4,7 @@ const jwtService = require('../service/jwtHandler')
 module.exports = {
     user: async (req, res, next) => {
         try {
-            let token = req.headers.accsesstoken
+            let token = req.headers.accsesstoken || req.body.accsesstoken
             jwt.verify(token, process.env.accessTokenSecret, (err, decoded) => {
                 if (err) {
                     console.log(err)
@@ -23,7 +23,7 @@ module.exports = {
     },
     refreshToken: async (req, res, next) => {
         try {
-            let token = req.headers.accsesstoken || req.headers.refreshToken
+            let token = req.headers.accsesstoken || req.headers.refreshToken|| req.body.accsesstoken|| req.body.refreshToken
             let isToken = await jwtService.verifyToken(token, process.env.refreshTokenSecret)
             if (isToken) {
                 req.decoded = isToken

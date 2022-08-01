@@ -31,12 +31,18 @@ const routeUser = (app) => {
         console.log(req)
     })
     route.get('/loginSuccess', async (req, res) => {
-        console.log(req.user)
         res.sendFile('C:/Users/84833/Desktop/LoginWithGooeBE_Training/server/src/views/socket.io.html', {
             data: req.user
         })
     })
-    route.post('/creatRoom', auth.user, userController.createRoomChat)
+    route.get('/chatRoom',(req,res)=>{
+        res.status(200).sendFile('C:/Users/84833/Desktop/LoginWithGooeBE_Training/server/src/views/socket.io.html')
+    })
+    route.get('/createRoomPage',(req,res)=>{
+        res.sendFile('C:/Users/84833/Desktop/LoginWithGooeBE_Training/server/src/views/createRoom.html') 
+    })
+    route.post('/handlercreatRoom', userController.createRoomChat)
+    route.post('/handlerJoinInRoom',userController.joinRoom)
     return app.use('/user', route);
 }
 module.exports = routeUser

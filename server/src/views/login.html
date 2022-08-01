@@ -20,16 +20,23 @@
         <label>
             <h3>Password</h3><input id="password" name="userPassword" type="password">
         </label><br>
-        <button id="button-submit" type="submit">login</button>
+        <button id="button-submit" type="submit" onclick="">login</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
-    <script src="./loginJavscript.js"></script>
     <script>
-        const instance = axios.create({
-            baseURL:'http://localhost:8080/user/login',
-            timeout: 3*1000
+        console.log('hello')
+        let button = document.getElementById('button-submit')
+        button.addEventListener('click', async() => {
+            let userName = document.getElementById('username').value
+            let userPassword = document.getElementById('password').value
+            console.log('params ', userName, ' ', userPassword)
+            let res = await axios.post('/user/login',{userName,userPassword})
+            window.localStorage.setItem('accessToken',res.data.accessToken)
+            window.localStorage.setItem('refreshToken',res.data.refreshToken)
+            console.log('html ',window.localStorage.getItem('accessToken'))
+            let accessToken = window.localStorage.getItem('accessToken')
+            window.location.href = 'http://localhost:8080/user/createRoomPage'
         })
-
     </script>
 </body>
 

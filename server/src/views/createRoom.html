@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <title>Document</title>
+</head>
+<h1>Room</h1><br>
+<input id="roomID"></input>
+<button id="submit">create</button><br>
+<input style="margin-top:10px" id="roomID1"></input><button id="join">Join</button>
+<!-- create new room -->
+<script>
+    let button = document.getElementById('submit')
+    button.addEventListener('click',async ()=> {
+        let roomID = document.getElementById('roomID').value
+        let accessToken = window.localStorage.getItem('accessToken')
+        console.log(accessToken)
+        // handler createRoom 
+        let res= await axios.post('/user/handlercreatRoom',{accessToken,roomID})
+        let roomiD = res.data
+        console.log('accessToken ',roomiD)
+        window.location.href='http://localhost:8080/user/chatRoom'
+    })
+    // messages.appendChild(item);
+</script>
+<!-- join in room -->
+<script>
+    let joinInRoom = document.getElementById('join')    
+    joinInRoom.addEventListener('click',async()=>{
+        let accessToken = window.localStorage.getItem('accessToken')
+        let roomID = document.getElementById('roomID1')    
+        let res = await axios.post('http://localhost:8080/user/handlerJoinInRoom',{accessToken,roomID})
+        console.log('res ',res)
+    })
+</script>
+<body>
+</body>
+</html>

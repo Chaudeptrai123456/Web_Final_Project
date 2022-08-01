@@ -60,33 +60,43 @@
         }
     </style>
 </head>
+
 <body>
     <ul id="messages"></ul>
     <form id="form" action="">
         <input id="input" autocomplete="off" type="mutipleFile" /><button>Send</button>
+        <input id="inputFile" type="mutipleFile">File</input>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-
     <script>
+    </script>
+    <script>
+        let refresh = window.localStorage.getItem('refreshToken')
+        console.log('refreshToken ', refresh)
+        let accessToken = window.localStorage.getItem('accessToken')
+        console.log('accessToken ', accessToken)
         var socket = io();
-
         var messages = document.getElementById('messages');
         var form = document.getElementById('form');
         var input = document.getElementById('input');
-
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (input.value) {
-                socket.emit('chat message', input.value);
+                console.log('input ', input.value)
+                socket.emit('chat message', {
+                    value: input.value,
+                    token: refresh
+                });
                 input.value = '';
             }
         });
         socket.on('chat message', function (msg) {
             var item = document.createElement('li');
-            item.textContent ='nameUser '+ msg;
+            item.textContent = 'nameUser ' + msg;
             messages.appendChild(item);
             window.scrollTo(0, document.body.scrollHeight);
         });
     </script>
 </body>
+
 </html>

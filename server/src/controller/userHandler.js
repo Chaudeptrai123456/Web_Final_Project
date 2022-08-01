@@ -1,8 +1,10 @@
 const cloudinary = require('../service/cloudinaryConfig');
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
+const Room  = require('../model/room')
 const saltRounds = 12;
 const jwt = require('../service/jwtHandler')
+require('dotenv').config()
 module.exports = {
     register: async (req, res) => {
         try {
@@ -46,7 +48,6 @@ module.exports = {
                 userName,
                 userPassword
             } = req.body
-            console.log(req.body);
             let user = await User.findOne({
                 userName: userName
             }).lean();
@@ -63,7 +64,6 @@ module.exports = {
                 });
             } else {
                 let tokens = await jwt.create(user._id)
-                console.log(tokens)
                 return res.status(200,{"Access-Control-Allow-Origin":"true"}).json({
                     message: "login successful!",
                     accessToken: tokens.accessToken,
@@ -148,8 +148,20 @@ module.exports = {
         }
     },
     createRoomChat: async (req, res) => {
-        return res.status(2000).json({
-            message: "create room"
+        let {accessToken,roomID} = req.body
+        let decode = await jwt.verifyToken(accessToken,process.env.accessTokenSecret)
+        let userID = decode.usedID
+        let newRoom = await Room({
+            roomID,
+            userIDList:[]
+        })
+        newRoom.userIDList.push(userID)
+        await newRoom.save()
+        console.log('newRoom ',newRoom)
+        return res.status(200).json({
+            message: "create room",
+            accessToken:accessToken,
+            roomID:roomID
         })
     },
     refreshToken: async (req, res) => {
@@ -163,5 +175,21 @@ module.exports = {
                 message: error
             })
         }
+    },
+    joinRoom :async(req,res)=>{
+        try {
+            let {accessToken,roomID} = req.body
+            let decoded = await jwt.verifyToken(accessToken,process.env.accessTokenSecret)
+            let user = await User.findById(decoded.usedID).lean()
+            let room = await User.findOneAndUpdate({roomID},{$push:{userIDList:user._id}})
+            return res.status(200).json({
+                room: room,
+                user: user
+            })
+        } catch(err) {
+
+            return res.status(500).json('loi server')
+        }
     }
+     
 }
